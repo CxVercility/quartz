@@ -781,18 +781,18 @@ public class XMLSchedulingDataProcessor implements ErrorHandler {
             addTriggerToSchedule(trigger);
         }
     }
-    
+
     protected String getTrimmedToNullString(XPath xpathToElement, String elementName, Node parentNode) throws XPathExpressionException {
-        String str = (String) xpathToElement.evaluate(elementName,
-                parentNode, XPathConstants.STRING);
-        
-        if(str != null)
-            str = str.trim();
-        
-        if(str != null && str.length() == 0)
+        String str = (String) xpathToElement.evaluate(elementName, parentNode, XPathConstants.STRING);
+        if (str != null && str.isEmpty()) {
             str = null;
-        
-        return str;
+        }
+
+        return this.resolveVariables(str);
+    }
+
+    protected String resolveVariables(String str) {
+        return str != null && str.matches("@.*") ? System.getenv(str.substring(1)) : str;
     }
 
     protected Boolean getBoolean(XPath xpathToElement, String elementName, Document document) throws XPathExpressionException {

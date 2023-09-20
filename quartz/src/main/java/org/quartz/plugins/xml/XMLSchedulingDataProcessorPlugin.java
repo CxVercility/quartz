@@ -201,10 +201,15 @@ public class XMLSchedulingDataProcessorPlugin
         // Create JobFile objects
         StringTokenizer stok = new StringTokenizer(fileNames, FILE_NAME_DELIMITERS);
         while (stok.hasMoreTokens()) {
-            final String fileName = stok.nextToken();
-            final JobFile jobFile = new JobFile(fileName);
-            jobFiles.put(fileName, jobFile);         
+            String fileName = this.resolveVariables(stok.nextToken());
+            JobFile jobFile = new JobFile(fileName);
+            this.jobFiles.put(fileName, jobFile);
         }
+
+    }
+
+    protected String resolveVariables(String str) {
+        return str != null && str.matches("@.*") ? System.getenv(str.substring(1)) : str;
     }
 
     
